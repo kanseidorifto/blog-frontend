@@ -5,6 +5,7 @@ import axios from '../axios';
 import { Post } from '../components/Post';
 import { Index } from '../components/AddComment';
 import { CommentsBlock } from '../components/CommentsBlock';
+import ReactMarkdown from 'react-markdown';
 
 export const FullPost = () => {
 	const [data, setData] = React.useState();
@@ -31,7 +32,7 @@ export const FullPost = () => {
 	return (
 		<>
 			<Post id={data._id} {...data} isFullPost>
-				<p>{data.text}</p>
+				<ReactMarkdown children={data.text} />
 			</Post>
 			<CommentsBlock
 				items={[
