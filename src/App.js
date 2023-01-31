@@ -13,7 +13,6 @@ function App() {
 	React.useEffect(() => {
 		dispatch(fetchAuthMe());
 	}, [dispatch]);
-	console.log(process.env.REACT_APP_API_URL);
 	return (
 		<>
 			<Header />

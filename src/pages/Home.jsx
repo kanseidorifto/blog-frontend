@@ -9,11 +9,15 @@ import { Post } from '../components/Post';
 import { TagsBlock } from '../components/TagsBlock';
 import { CommentsBlock } from '../components/CommentsBlock';
 import { fetchPosts, fetchTags } from '../redux/slices/posts';
+import axios from '../axios';
 
 export const Home = () => {
 	const dispatch = useDispatch();
 	const userData = useSelector((state) => state.auth.data);
 	const { posts, tags } = useSelector((state) => state.posts);
+
+	const [lastComments, setLastComments] = React.useState([]);
+	const [isCommentsLoading, setCommentsLoading] = React.useState(true);
 
 	const isPostLoading = posts.status === 'loading';
 	const isTagsLoading = tags.status === 'loading';
@@ -24,6 +28,19 @@ export const Home = () => {
 
 	React.useEffect(() => {
 		dispatch(fetchTags());
+	}, []);
+
+	React.useEffect(() => {
+		axios
+			.get('/comments')
+			.then((res) => {
+				setLastComments(res.data);
+				setCommentsLoading(false);
+			})
+			.catch((err) => {
+				console.warn('Error fetching last comments');
+				alert('Error retrieving comments');
+			});
 	}, []);
 
 	return (
@@ -57,25 +74,11 @@ export const Home = () => {
 					) : (
 						<TagsBlock items={tags.items} isLoading={false} />
 					)}
-					<CommentsBlock
-						items={[
-							{
-								user: {
-									fullName: 'Вася Пупкин',
-									avatarUrl: 'https://mui.com/static/images/avatar/1.jpg',
-								},
-								text: 'Это тестовый комментарий',
-							},
-							{
-								user: {
-									fullName: 'Иван Иванов',
-									avatarUrl: 'https://mui.com/static/images/avatar/2.jpg',
-								},
-								text: 'When displaying three lines or more, the avatar is not aligned at the top. You should set the prop to align the avatar at the top',
-							},
-						]}
-						isLoading={false}
-					/>
+					{isCommentsLoading ? (
+						<CommentsBlock isLoading={true} />
+					) : (
+						<CommentsBlock items={lastComments} isLoading={false} />
+					)}
 				</Grid>
 			</Grid>
 		</>
