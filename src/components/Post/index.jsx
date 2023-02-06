@@ -13,6 +13,7 @@ import { UserInfo } from '../UserInfo';
 import { PostSkeleton } from './Skeleton';
 import { Link } from 'react-router-dom';
 import { fetchRemovePost } from '../../redux/slices/posts';
+import dayjs from 'dayjs';
 
 export const Post = ({
 	id,
@@ -62,7 +63,7 @@ export const Post = ({
 				/>
 			)}
 			<div className={styles.wrapper}>
-				<UserInfo {...user} additionalText={createdAt} />
+				<UserInfo {...user} additionalText={dayjs(createdAt).format('MMMM D, YYYY h:mm A')} />
 				<div className={styles.indention}>
 					<h2 className={clsx(styles.title, { [styles.titleFull]: isFullPost })}>
 						{isFullPost ? title : <Link to={`/posts/${id}`}>{title}</Link>}
@@ -70,7 +71,7 @@ export const Post = ({
 					<ul className={styles.tags}>
 						{tags.map((name) => (
 							<li key={name}>
-								<Link to={`/tag/${name}`}>#{name}</Link>
+								<Link to={`/tags/${name}`}>#{name}</Link>
 							</li>
 						))}
 					</ul>

@@ -55,7 +55,7 @@ export const AddPost = () => {
 			const fields = {
 				title,
 				text,
-				tags: tags.split(/,\s*/),
+				tags: tags.split(/\s*,\s*/),
 				imageUrl,
 			};
 

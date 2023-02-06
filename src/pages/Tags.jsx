@@ -4,11 +4,12 @@ import Tab from '@mui/material/Tab';
 import Grid from '@mui/material/Grid';
 
 import { useDispatch, useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
 
 import { Post } from '../components/Post';
 import { TagsBlock } from '../components/TagsBlock';
 import { CommentsBlock } from '../components/CommentsBlock';
-import { fetchPosts, fetchTags } from '../redux/slices/posts';
+import { fetchPostsByTag } from '../redux/slices/posts';
 import axios from '../axios';
 
 const tabs = [
@@ -16,13 +17,15 @@ const tabs = [
 	{ name: 'Popular', sortType: 'views' },
 ];
 
-export const Home = () => {
+export const Tags = () => {
 	const dispatch = useDispatch();
 	const userData = useSelector((state) => state.auth.data);
 	const { posts, tags } = useSelector((state) => state.posts);
 
+	const { tag } = useParams();
 	const [lastComments, setLastComments] = React.useState([]);
 	const [isCommentsLoading, setCommentsLoading] = React.useState(true);
+	// const [sortType, setSortType] = React.useState('');
 	const [activeTab, setActiveTab] = React.useState(0);
 
 	const isPostLoading = posts.status === 'loading';
@@ -33,12 +36,9 @@ export const Home = () => {
 	};
 
 	React.useEffect(() => {
-		dispatch(fetchPosts({ sortBy: tabs[activeTab].sortType }));
-	}, [activeTab]);
-
-	React.useEffect(() => {
-		dispatch(fetchTags());
-	}, []);
+		window.scrollTo(0, 0);
+		dispatch(fetchPostsByTag({ tag, fields: { sortBy: tabs[activeTab].sortType } }));
+	}, [tag, activeTab]);
 
 	React.useEffect(() => {
 		axios
@@ -55,6 +55,7 @@ export const Home = () => {
 
 	return (
 		<>
+			<h1>#{tag}</h1>
 			<Tabs style={{ marginBottom: 15 }} value={activeTab} aria-label="basic tabs example">
 				{tabs.map((tab, index) => (
 					<Tab key={index} label={tab.name} onClick={() => onClickTab(index)} />
@@ -73,7 +74,7 @@ export const Home = () => {
 									user={obj.user}
 									createdAt={obj.createdAt}
 									viewsCount={obj.viewsCount}
-									commentsCount={obj.commentsCount}
+									commentsCount={3}
 									tags={obj.tags}
 									isEditable={userData?._id === obj.user._id}
 								/>

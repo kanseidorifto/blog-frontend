@@ -16,7 +16,10 @@ export const Index = ({ user, onSend }) => {
 	return (
 		<>
 			<div className={styles.root}>
-				<Avatar classes={{ root: styles.avatar }} src={user.avatarUrl} />
+				<Avatar
+					classes={{ root: styles.avatar }}
+					src={`${process.env.REACT_APP_API_URL}${user.avatarUrl}`}
+				/>
 				<div className={styles.form}>
 					<TextField
 						label="Type what you think..."
